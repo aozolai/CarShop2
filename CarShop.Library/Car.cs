@@ -9,6 +9,7 @@ namespace CarShop.Library
         public string Model { get; set; }
         public int Year { get; set; }
         public string Color { get; set; }
+        public int Price { get; set; }
         public bool Sold { get; set; }
         public bool IsAvailable
         {

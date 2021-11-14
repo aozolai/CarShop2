@@ -10,6 +10,7 @@ namespace CarShop.Library
     {
         public string Name { get; set; }
         public string Surname { get; set; }
+        public string RecipientId { get; set; }
         public DateTime PurchaseDate { get; set; }
     }
 }

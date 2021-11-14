@@ -10,13 +10,13 @@ namespace CarShop.Frontend
         static readonly CarOperations CarOperator = new CarOperations();
         static void Main(string[] args)
         {
-            string exit = "continue";
+            var exit = "continue";
 
             while (exit == "continue")
             {
-                ShowMenu();
+                UserOutput.ShowMenu();
 
-                string option = Console.ReadLine();
+                var option = Console.ReadLine();
 
                 if (option.Equals("exit"))
                 {
@@ -32,146 +32,96 @@ namespace CarShop.Frontend
 
                     case "2":
                         //Find a car by is available
-                        Console.WriteLine($"Available car count is: {CarOperator.FindAvailableCarsCount()}");
+                        CarOperator.FindAvailableCarsCount();
                         break;
 
                     case "3":
                         //Get cars by year
-                        GetCarByYear();
+                        UserOutput.FindCarByYearMesage();
+                        var year = Convert.ToInt32(Console.ReadLine());
+                        CarOperator.GetCarByYear(year);
                         break;
+
                     case "4":
                         //Show list of all presented cars
-                        ShowListOfAllCars();
+                        CarOperator.ShowListOfAllCars();
                         break;
+
                     case "5":
                         // Buy car - mark it sold
-                        BoughtCar();
+                        UserOutput.ShowAvailableCarsMessage();
+                        CarOperator.ShowListOfAllCars();
+
+                        UserOutput.ChooseCarToBuyMessage();
+                        var inputId = Convert.ToInt32(Console.ReadLine());
+
+                        CarOperator.BuyCar(inputId);
+                        GetReceipient(inputId);
                         break;
+
                     case "6":
                         // Get receipt
-                        GetRecipient();
+                        UserOutput.ShowSoldCarsMessage();
+                        CarOperator.ShowListOfAllSoldCars();
+
+                        UserOutput.ChooseSoldCarsIdMessage();
+                        var inputSoldCar = Convert.ToInt32(Console.ReadLine());
+
+                        GetReceipient(inputSoldCar);
                         break;
                 }
             }
         }
-        public static void ShowMenu()
+        public static Car CreateCarObject()
         {
-            Console.WriteLine();
-            Console.WriteLine("Please choose car operation:");
-            Console.WriteLine("1. Add car to the shop");
-            Console.WriteLine("2. Find car by is available");
-            Console.WriteLine("3. Find car by year");
-            Console.WriteLine("4. Show list of all presented cars");
-            Console.WriteLine("5. Buy a car");
-            Console.WriteLine("6. Get receipt");
-            Console.WriteLine();
-        }
-        public static Car CreateCarObject(int id)
-        {
-            var car = new Car
-            { 
-            Id = id
-            };
+            var car = new Car();
 
-            Console.WriteLine("Please add car model:");
+            UserOutput.CreateCarModelMessage();
             car.Model = Console.ReadLine();
 
-            Console.WriteLine("Add car color:");
+            UserOutput.CreateCarColorMessage();
             car.Color = Console.ReadLine();
 
-            Console.WriteLine("Add car year:");
+            UserOutput.CreateCarYearMessage();
             car.Year = Convert.ToInt32(Console.ReadLine());
+
+            UserOutput.AddCarsPrice();
+            car.Price = Convert.ToInt32(Console.ReadLine());
+
+            UserOutput.CreateCarIdMessage();
+            car.Id = Convert.ToInt32(Console.ReadLine());
 
             return car;
         }
         public static void AddCarToTheList()
         {
-            int id = 0;
             var continues = true;
 
             while (continues)
             {
-                var car = CreateCarObject(id);
+                var car = CreateCarObject();
                 CarOperator.AddCarToTheList(car);
 
-                Console.WriteLine("Do you want to create mores cars? (Yes/No)");
+                UserOutput.ShowCreateMoreCarsMessage();
 
                 var yesNo = Console.ReadLine();
-                if (yesNo != "Yes")
-                {
-                    continues = false;
-                }
-                id++;
+                if (yesNo == "Yes") continue;
+
+                continues = false;
             }
         }
-        public static void GetCarByYear()
-        {
-            Console.WriteLine("Please provide year:");
-            var year = Convert.ToInt32(Console.ReadLine());
-            var carArray = CarOperator.FindCarByYear(year);
-
-            foreach (var car in carArray)
-            {
-                Console.WriteLine($"Found car Id: {car.Id} model: {car.Model}");
-            }
-        }
-        public static void ShowListOfAllCars()
-        {
-            int i = 0;
-
-            foreach (var car in CarOperator.CarArray)
-            {
-                if (car != null)
-                {
-                    Console.WriteLine($"{i}. Car with {car.Id} model: {car.Model}");
-                }
-                i++;
-            }
-        }
-        public static void BoughtCar()
-        {
-            Console.WriteLine("In CarShop available cars:");
-            ShowListOfAllCars();
-
-            Console.WriteLine("Choose which car you want to buy and insert cars ID number here:");
-            var inputId = Convert.ToInt32(Console.ReadLine());
-            
-            CarOperator.BuyCar(inputId);
-            Receipt(inputId);
-        }
-        public static void ShowListOfAllSoldCars()
-        {
-            int i = 0;
-
-            foreach (var car in CarOperator.CarArray)
-            {
-                if (car != null && car.Sold)
-                {
-                    Console.WriteLine($"{i}. Car with {car.Id} model: {car.Model} is sold");
-                }
-                i++;
-            }
-        }
-        public static void GetRecipient()
-        {
-            Console.WriteLine("These cars are sold:");
-            ShowListOfAllSoldCars();
-
-            Console.WriteLine("Enter cars ID number, to receive receipt");
-            var inputSoldCar = Convert.ToInt32(Console.ReadLine());
-            Receipt(inputSoldCar);
-        }
-        private static void Receipt(int inputSoldCar)
+        public static void GetReceipient(int inputSoldCar)
         {
             var recipient = new Recipient();
-            Console.WriteLine("Enter your name:");
+            UserOutput.GetBuyersNameMessage();
             recipient.Name = Console.ReadLine();
-            Console.WriteLine("Enter your surname");
+            UserOutput.GetBuyersSurnameMessage();
             recipient.Surname = Console.ReadLine();
 
-            Console.WriteLine(CarOperator.GetReceipt(inputSoldCar));
-            Console.WriteLine($"Buyer: {recipient.Name} {recipient.Surname}");
-            Console.WriteLine($"Purchase happened on: {recipient.PurchaseDate}");
+            var receipt = CarOperator.GetReceipt(inputSoldCar);
+
+            UserOutput.GetReceiptPrintOutMessage(receipt, recipient.Name, recipient.Surname, recipient.PurchaseDate);
+
         }
     }
 }

@@ -8,42 +8,86 @@ namespace CarShop.Library
 {
     public class CarOperations : ICarOperations
     {
-        public Car[] CarArray = new Car[100];
+        public List<Car> CarList = new();
         public void AddCarToTheList(Car car)
         {
-            var index = CarArray.Count(x => x != null);
-            CarArray[index] = car;
+            CarList.Add(car);
         }
-        public int FindAvailableCarsCount()
+        public void FindAvailableCarsCount()
         {
-            return CarArray.Count(x => x != null && x.IsAvailable && !x.Sold);
+            var count = CarList.Count(x => x != null && x.IsAvailable && !x.Sold);
+            UserOutput.ShowAvailableCarMessage(count);
         }
         public Car[] FindCarByYear(int year)
         {
-            return CarArray.Where(x => x != null && x.Year == year).ToArray();
+            return CarList.Where(x => x != null && x.Year == year).ToArray();
+        }
+        public void GetCarByYear(int year)
+        {
+            var CarList = FindCarByYear(year);
+
+            foreach (var car in CarList)
+            {
+                UserOutput.ShowCarListMessage(car.Id, car.Model, car.Price);
+            }
+        }
+        public void ShowListOfAllCars()
+        {
+            int i = 0;
+
+            foreach (var car in CarList)
+            {
+                if (car != null)
+                {
+                    UserOutput.ShowCarListMessage(car.Id, car.Model, car.Price);
+                }
+                i++;
+            }
         }
         public void BuyCar(int id)
         {
-            var selectedCar = CarArray.FirstOrDefault(x => x.Id == id);
+            var selectedCar = CarList.FirstOrDefault(x => x.Id == id);
             if (selectedCar != null)
             {
                 selectedCar.Sold = true;
+                UserOutput.ShowCongratulationsMessage();
             }
             else
             {
-                Console.WriteLine("Car not found");
+                UserOutput.ShowCarNotFoundMessagge();
+            }
+        }
+        public void ShowListOfAllSoldCars()
+        {
+            int i = 0;
+
+            foreach (var car in CarList)
+            {
+                if (car != null && car.Sold)
+                {
+                    UserOutput.ShowSoldCarListMessage(car.Id, car.Model);
+                }
+                i++;
             }
         }
         public string GetReceipt(int id)
-        { 
-            var boughtCar = CarArray.FirstOrDefault(x => x.Id == id);
+        {
+            var boughtCar = CarList.FirstOrDefault(x => x.Id == id);
+            var recipientId = Guid.NewGuid().ToString();
             if (boughtCar != null)
             {
-                Console.WriteLine();
-                Console.WriteLine("RECEIPT:");
-                return $"Your bought car is -  {boughtCar.Model} , color - {boughtCar.Color}";
+                UserOutput.GetReceiptMessage();
+                return @$"
+            Receipt number:     {recipientId}                           
+                 Car model:     {boughtCar.Model} 
+                 Car color:     {boughtCar.Color}
+                  Car year:     {boughtCar.Year}
+               Price (EUR):     {boughtCar.Price}
+                            
+";
             }
             return null;
         }
+
     }
 }
