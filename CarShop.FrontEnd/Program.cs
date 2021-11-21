@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using CarShop.Library;
+using System.Text;
+using System.IO;
 
 namespace CarShop.Frontend
 {
@@ -9,6 +11,24 @@ namespace CarShop.Frontend
     {
         static readonly CarOperations CarOperator = new CarOperations();
         static void Main(string[] args)
+        {
+            CarOperator.SetStorage(new CarFileStorage());
+
+            try
+            {
+                MainMethod();
+            }
+            catch (Exception exception)
+            {
+                Console.WriteLine($"Exception message: {exception.Message}");
+            }
+            finally
+            {
+                MainMethod();
+            }
+        }
+
+        public static void MainMethod()
         {
             var exit = "continue";
 
@@ -69,6 +89,7 @@ namespace CarShop.Frontend
 
                         GetReceipient(inputSoldCar);
                         break;
+
                 }
             }
         }
@@ -92,6 +113,7 @@ namespace CarShop.Frontend
             car.Id = Convert.ToInt32(Console.ReadLine());
 
             return car;
+
         }
         public static void AddCarToTheList()
         {

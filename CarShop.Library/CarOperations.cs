@@ -9,10 +9,25 @@ namespace CarShop.Library
     public class CarOperations : ICarOperations
     {
         public List<Car> CarList = new();
+        private ICarStorage storage;
         public void AddCarToTheList(Car car)
         {
             CarList.Add(car);
+            SaveList();
         }
+        private void SaveList()
+        {
+            if (storage != null)
+            {
+                storage.SaveCarList(CarList);
+            }
+        }
+        public void SetStorage(ICarStorage storage)
+        {
+            this.storage = storage;
+            CarList = this.storage.ReadCarList();
+        }
+
         public void FindAvailableCarsCount()
         {
             var count = CarList.Count(x => x != null && x.IsAvailable && !x.Sold);
@@ -51,6 +66,7 @@ namespace CarShop.Library
             {
                 selectedCar.Sold = true;
                 UserOutput.ShowCongratulationsMessage();
+                SaveList();
             }
             else
             {
@@ -88,6 +104,7 @@ namespace CarShop.Library
             }
             return null;
         }
+
 
     }
 }
