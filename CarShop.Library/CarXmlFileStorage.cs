@@ -9,7 +9,7 @@ using System.Xml.Serialization;
 namespace CarShop.Library
 {
 
-    public class CarFileStorage : ICarStorage
+    public class CarXmlFileStorage : ICarStorage
     {
         string FilePath { get; set; } = @"C:\SchoolFiles\CarListStorage.txt";
 

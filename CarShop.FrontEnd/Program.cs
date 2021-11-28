@@ -12,7 +12,7 @@ namespace CarShop.Frontend
         static readonly CarOperations CarOperator = new CarOperations();
         static void Main(string[] args)
         {
-            CarOperator.SetStorage(new CarCsvFileStorage());
+            CarOperator.SetStorage(new CarJsonFileStorage());
 
             try
             {
