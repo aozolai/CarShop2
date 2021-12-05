@@ -59,6 +59,19 @@ namespace CarShop.Library
                 i++;
             }
         }
+        public void ShowListOfAllNotSoldCars()
+        {
+            int i = 0;
+
+            foreach (var car in CarList)
+            {
+                if (car != null && car.Sold == false)
+                {
+                    UserOutput.ShowCarListMessage(car.Id, car.Model, car.Price);
+                }
+                i++;
+            }
+        }
         public void BuyCar(int id)
         {
             var selectedCar = CarList.FirstOrDefault(x => x.Id == id);

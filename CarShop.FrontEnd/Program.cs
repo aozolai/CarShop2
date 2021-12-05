@@ -4,6 +4,7 @@ using System.Linq;
 using CarShop.Library;
 using System.Text;
 using System.IO;
+using System.Data.SqlClient;
 
 namespace CarShop.Frontend
 {
@@ -12,7 +13,7 @@ namespace CarShop.Frontend
         static readonly CarOperations CarOperator = new CarOperations();
         static void Main(string[] args)
         {
-            CarOperator.SetStorage(new CarJsonFileStorage());
+            CarOperator.SetStorage(new CarDbStorage());
 
             try
             {
@@ -70,7 +71,7 @@ namespace CarShop.Frontend
                     case "5":
                         // Buy car - mark it sold
                         UserOutput.ShowAvailableCarsMessage();
-                        CarOperator.ShowListOfAllCars();
+                        CarOperator.ShowListOfAllNotSoldCars();
 
                         UserOutput.ChooseCarToBuyMessage();
                         var inputId = Convert.ToInt32(Console.ReadLine());
